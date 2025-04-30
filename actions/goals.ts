@@ -21,3 +21,12 @@ export async function createGoal(goal: {
     return await res.json();
   }
   
+export async function displayGoals(){
+    const res = await fetch("/api/goals/my", {
+        method: "GET",
+        credentials: "include"
+    });
+        
+    const data = await res.json();
+    console.log(data.goals);
+}
