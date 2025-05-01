@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/database/db";
-import { checkins, goals } from "@/database/index";
+import { checkins, goals, users } from "@/database/index";
 import { NextResponse, NextRequest } from "next/server";
 import { headers } from "next/headers";
 import { eq } from 'drizzle-orm';
@@ -29,15 +29,6 @@ export async function POST(req: NextRequest) {
     if (!session || !session.user?.id) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
-    // Prevent multiple check-ins for the same goal on the same day
-    const today = new Date().toISOString().split('T')[0]; // only take the day YYYY-MM-DD
-    const existing = await db.query.checkins.findFirst({
-      where: (c) => eq(c.userId, session.user.id) && eq(c.goalId, goalId) && eq(c.checkInDate, today)
-    });
-    if (existing) {
-      return NextResponse.json({ message: 'Already checked in today.' }, { status: 409 });
-    }
   
     const { goalId } = await req.json();
     if (!goalId) {
@@ -49,8 +40,44 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Goal not found" }, { status: 404 });
     }
 
-    const xpEarned = calculateXP(goal.difficulty, goal.createdAt);
+    // Update user table  
+    const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, session.user.id));
 
+    // Fetch user's last check-in date and streak
+    const today = new Date().toISOString().split('T')[0];
+    const lastCheckIn = user.lastCheckInDate;
+    const isSameDay = lastCheckIn === today;
+    if (isSameDay) { // Prevent multiple check-ins for the same goal on the same day
+        return new Response("Already checked in today", { status: 400 });
+    }
+    
+    // Update user xp and streak
+    let newStreak = 1;
+    if (lastCheckIn){
+        const lastCheckInDateObj = new Date(lastCheckIn);
+        const nextCheckInDateObj = new Date(lastCheckInDateObj);
+        nextCheckInDateObj.setDate(nextCheckInDateObj.getDate() + 1);
+        const expectedToday = nextCheckInDateObj.toISOString().split('T')[0];
+        const isStreakContinuing = today === expectedToday;
+        if (isStreakContinuing) {
+            newStreak = (user.streakCount ?? 0) + 1;
+        } 
+    }
+
+    const xpEarned = calculateXP(goal.difficulty, goal.createdAt);
+    await db
+        .update(users)
+        .set({
+        currentXP: (user.currentXP ?? 0) + xpEarned,
+        lastCheckInDate: today,
+        streakCount: newStreak,
+        })
+        .where(eq(users.id, session.user.id));
+
+    // Create a new checkin record
     const [checkin] = await db.insert(checkins).values({
         userId: session.user.id,
         goalId,
