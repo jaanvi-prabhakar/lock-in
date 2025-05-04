@@ -18,5 +18,9 @@ export async function POST(req: Request) {
     if (!team) return NextResponse.json({ error: "Invalid invite code" }, { status: 400 });
   
     await db.insert(teamMemberships).values({ userId: session.user.id, teamId: team.id });
-    return NextResponse.json({ success: true });
+    // return NextResponse.json({ success: true });
+    return NextResponse.json({
+        message: "Joined team successfully",
+        teamId: team.id
+    });
 }
