@@ -10,7 +10,7 @@ export default function Dashboard() {
       <h1 className="text-3xl font-bold mb-6 text-center">Welcome Back!</h1>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10">
-        <XPBadge level={5} currentXP={1220} nextLevelXP={1500} />
+        <XPBadge level={5} xp={1220} nextLevelXP={1500} />
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center sm:text-right">
           <p className="text-sm text-gray-600 dark:text-gray-300">Daily Streak</p>
           <p className="text-2xl font-semibold text-orange-500">🔥 7 days</p>
@@ -28,23 +28,23 @@ export default function Dashboard() {
           <GoalCard
             title="Do 1 LeetCode problem"
             description="Stay sharp with one problem a day"
-            difficulty="Medium"
+            difficulty="medium"
             timeEstimate="20 min"
-            checkedIn={false}
+            checkedInToday={false}
           />
           <GoalCard
             title="Finish AWS Cert Module"
             description="Complete today's learning module"
-            difficulty="Hard"
+            difficulty="hard"
             timeEstimate="1 hr"
-            checkedIn={true}
+            checkedInToday={true}
           />
           <GoalCard
             title="Read 1 ML paper"
             description="Keep up with research!"
-            difficulty="Medium"
+            difficulty="medium"
             timeEstimate="45 min"
-            checkedIn={false}
+            checkedInToday={false}
           />
         </div>
       </section>
