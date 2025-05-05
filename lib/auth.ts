@@ -2,10 +2,10 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 
 import { db } from "@/database/db"
-// import * as schema from "@/database/schema"  // this one can't be resolved until Neon is setup and we run pnpm auth:generate 
+import * as schema from "@/database/index"
+import { admin } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 
-import { admin } from "better-auth/plugins"
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
@@ -19,6 +19,7 @@ export const auth = betterAuth({
             // Cache duration in seconds.
             // set to 5 mins for development; 
             // could be a week or longer in production
+
             maxAge: 5 * 60 
         },
         extend: {
@@ -26,10 +27,12 @@ export const auth = betterAuth({
               role: true,
             },
           },
+
     },
     emailAndPassword: {
         enabled: true
     },
+
     plugins: [
         nextCookies(), // keep this last in `plugins` array
         admin() 
