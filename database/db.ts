@@ -4,7 +4,7 @@ import { neonConfig, Pool } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { WebSocket } from 'ws';
 
-import * as schema from './schema';
+// import * as schema from './schema'; // this one can't be resolved until Neon is setup and we run pnpm auth:generate 
 
 const connectionString =
   process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL : process.env.LOCAL_DATABASE_URL;
@@ -21,4 +21,4 @@ if (process.env.NODE_ENV === 'production') {
 
 const pool = new Pool({ connectionString });
 
-export const db = drizzle(pool, { schema });
+export const db = drizzle(pool, { schema }); // this one can't be resolved until Neon is setup and we run pnpm auth:generate 
