@@ -1,11 +1,13 @@
+'use client';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { usePathname } from 'next/navigation';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: true },
-  { name: 'Goals', href: '/goals', current: false },
-  { name: 'Teams', href: '/teams', current: false },
-  { name: 'Calendar', href: '/calendar', current: false },
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Goals', href: '/goals' },
+  { name: 'Teams', href: '/teams' },
+  { name: 'Calendar', href: '/calendar' },
 ]
 
 function classNames(...classes) {
@@ -13,6 +15,8 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+  const pathname = usePathname();
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -30,7 +34,7 @@ export default function Example() {
             <div className="flex shrink-0 items-center">
               <img
                 alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                src="/images/lock-in.png"
                 className="h-8 w-auto"
               />
             </div>
@@ -40,9 +44,9 @@ export default function Example() {
                   <a
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={pathname === item.href ? 'page' : undefined}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                      pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                       'rounded-md px-3 py-2 text-sm font-medium',
                     )}
                   >
@@ -70,7 +74,7 @@ export default function Example() {
                   <span className="sr-only">Open user menu</span>
                   <img
                     alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src="/images/mario.jpeg"
                     className="size-8 rounded-full"
                   />
                 </MenuButton>
@@ -116,9 +120,9 @@ export default function Example() {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? 'page' : undefined}
+              aria-current={pathname === item.href ? 'page' : undefined}
               className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                 'block rounded-md px-3 py-2 text-base font-medium',
               )}
             >

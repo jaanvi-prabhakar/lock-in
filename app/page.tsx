@@ -6,55 +6,44 @@ import XPBadge from '@/components/XPBadge';
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen px-4 py-10 bg-white text-gray-900 dark:bg-black dark:text-white">
-      <h1 className="text-3xl font-bold mb-6 text-center">Welcome Back!</h1>
+    <div className="min-h-screen px-10 py-16 sm:px-20 sm:py-24 bg-white text-gray-900 dark:bg-black dark:text-white">
+      <h1 className="text-3xl font-bold mb-10 text-center">Lock-in</h1>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10">
-        <XPBadge level={5} xp={1220} nextLevelXP={1500} />
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow text-center sm:text-right">
-          <p className="text-sm text-gray-600 dark:text-gray-300">Daily Streak</p>
-          <p className="text-2xl font-semibold text-orange-500">🔥 7 days</p>
-        </div>
-      </div>
-
-      <section className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">Today's Goals</h2>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-            + Add Goal
-          </button>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <GoalCard
-            title="Do 1 LeetCode problem"
-            description="Stay sharp with one problem a day"
-            difficulty="medium"
-            timeEstimate="20 min"
-            checkedInToday={false}
-          />
-          <GoalCard
-            title="Finish AWS Cert Module"
-            description="Complete today's learning module"
-            difficulty="hard"
-            timeEstimate="1 hr"
-            checkedInToday={true}
-          />
-          <GoalCard
-            title="Read 1 ML paper"
-            description="Keep up with research!"
-            difficulty="medium"
-            timeEstimate="45 min"
-            checkedInToday={false}
-          />
+      <section className="mb-14">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-4 text-left">Weekly XP Progress</h2>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
+            <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div className="flex justify-between items-end mt-2 h-24">
+              {[40, 60, 80, 30, 90, 70, 50].map((height, i) => (
+                <div key={i} className="w-3 bg-blue-500 rounded" style={{ height: `${height}%` }}></div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Team Progress</h2>
-        <div className="text-gray-500 dark:text-gray-400 italic">
-          {/* You could render TeamCard components here once they're implemented */}
-          Team goals and shared XP coming soon!
+      <section className="max-w-3xl mx-auto mb-6">
+        <h2 className="text-2xl font-semibold mb-4 text-left">Overview</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center items-start">
+          <div className="rounded-lg p-6 bg-white dark:bg-gray-800 shadow text-center">
+            <p className="text-md font-medium text-gray-700 dark:text-gray-300">Day Streak</p>
+            <p className="text-3xl font-bold text-orange-500 mt-2">🔥 7</p>
+          </div>
+          <div className="rounded-lg p-6 bg-white dark:bg-gray-800 shadow text-center">
+            <p className="text-md font-medium text-gray-700 dark:text-gray-300">Total XP</p>
+            <p className="text-3xl font-bold text-yellow-500 mt-2">⚡ 1220</p>
+          </div>
         </div>
+      </section>
+
+      <section className="text-center">
+        <h2 className="text-2xl font-semibold mb-4">Team Progress</h2>
+        <p className="text-gray-500 dark:text-gray-400 italic">
+          Team goals and shared XP coming soon!
+        </p>
       </section>
     </div>
   );

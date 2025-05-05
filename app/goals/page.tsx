@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import GoalCard from "@/components/GoalCard";
-import Link from "next/link";
 
 interface Goal {
   id: string;
@@ -16,6 +15,13 @@ interface Goal {
 export default function GoalsPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [newGoal, setNewGoal] = useState({
+    title: "",
+    description: "",
+    difficulty: "",
+    timeEstimate: "",
+  });
 
   useEffect(() => {
     async function fetchGoals() {
@@ -40,13 +46,91 @@ export default function GoalsPage() {
     <div className="p-6 sm:p-12 max-w-5xl mx-auto space-y-10">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Your Goals</h1>
-        <Link
-          href="/goals/create"
+        <button
+          onClick={() => setShowForm(!showForm)}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
-          + Add Goal
-        </Link>
+          {showForm ? "Cancel" : "+ Add Goal"}
+        </button>
       </div>
+
+      {showForm && (
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              console.log("Submitting new goal:", newGoal);
+              const res = await fetch("/api/goals/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newGoal),
+                cache: "no-store",
+              });
+              console.log("Response:", res);
+              if (!res.ok) {
+                throw new Error("Failed to create goal");
+              }
+              const data = await res.json();
+              if (data.goal) {
+                setGoals((prevGoals) => [...prevGoals, data.goal]);
+                setShowForm(false);
+                setNewGoal({ title: "", description: "", difficulty: "", timeEstimate: "" });
+              } else {
+                console.error("No goal returned from API:", data);
+              }
+            } catch (err) {
+              console.error("Failed to add goal:", err);
+            }
+          }}
+          className="space-y-4 bg-white border p-4 rounded shadow-md"
+        >
+          <div>
+            <label className="block font-medium">Title</label>
+            <input
+              type="text"
+              value={newGoal.title}
+              onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
+              className="w-full border p-2 rounded text-black"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-medium">Description</label>
+            <textarea
+              value={newGoal.description}
+              onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
+              className="w-full border p-2 rounded text-black"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-medium">Difficulty</label>
+            <input
+              type="text"
+              value={newGoal.difficulty}
+              onChange={(e) => setNewGoal({ ...newGoal, difficulty: e.target.value })}
+              className="w-full border p-2 rounded text-black"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-medium">Time Estimate</label>
+            <input
+              type="text"
+              value={newGoal.timeEstimate}
+              onChange={(e) => setNewGoal({ ...newGoal, timeEstimate: e.target.value })}
+              className="w-full border p-2 rounded text-black"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          >
+            Submit
+          </button>
+        </form>
+      )}
 
       <section>
         <h2 className="text-xl font-semibold mb-2">Current Goals</h2>
