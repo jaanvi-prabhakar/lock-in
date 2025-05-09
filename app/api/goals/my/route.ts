@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/database/db";
-import { goals } from "@/database/goals";
+import { goals } from "@/database/schema/goals";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers"

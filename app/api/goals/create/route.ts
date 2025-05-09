@@ -1,5 +1,5 @@
 import { db } from '@/database/db';
-import { goals } from '@/database/goals';
+import { goals } from '@/database/schema/goals';
 import { auth } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { headers } from "next/headers"

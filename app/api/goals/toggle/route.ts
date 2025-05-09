@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/database/db";
-import { goals } from "@/database/schema";
+import { goals } from '@/database/schema/goals';
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
