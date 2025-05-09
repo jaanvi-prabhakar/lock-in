@@ -1,3 +1,4 @@
+// lib/auth.ts
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
@@ -8,7 +9,13 @@ export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: "pg",
         usePlural: true,
-        schema
+        schema: {
+            // Explicitly map the schema tables
+            users: schema.users,
+            accounts: schema.accounts,
+            sessions: schema.sessions,
+            verifications: schema.verifications
+        }
     }),
     session: {
         cookieCache: {

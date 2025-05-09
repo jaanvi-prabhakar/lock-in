@@ -1,3 +1,4 @@
+// database/db.ts
 import "dotenv/config"
 import { neonConfig, Pool } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-serverless'
@@ -9,7 +10,14 @@ if (!connectionString) {
   throw new Error('DATABASE_URL is not set')
 }
 
+// Configure Neon for WebSockets
 neonConfig.webSocketConstructor = WebSocket
 
-const pool = new Pool({ connectionString })
-export const db = drizzle(pool) 
+// Create connection pool with SSL
+const pool = new Pool({ 
+  connectionString,
+  ssl: true // Ensure SSL is enabled for Neon
+})
+
+// Create and export Drizzle instance
+export const db = drizzle(pool)

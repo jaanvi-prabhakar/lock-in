@@ -1,7 +1,13 @@
 import { AuthView } from "./view"
+import { Suspense } from "react"
 
 export default async function AuthPage({ params }: { params: { pathname: string } }) {
-    const { pathname } = params
-    const redirectTo = pathname === "sign-out" ? "/auth/sign-in" : "/dashboard"
-    return <AuthView pathname={pathname} redirectTo={redirectTo} />
+    return (
+        <Suspense>
+            <AuthView 
+                pathname={params.pathname} 
+                redirectTo={params.pathname === "sign-out" ? "/auth/sign-in" : "/dashboard"} 
+            />
+        </Suspense>
+    )
 } 
