@@ -2,20 +2,49 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { usePathname } from 'next/navigation';
+import { authClient } from "@/lib/auth-client"; //import the auth client
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Goals', href: '/goals' },
   { name: 'Teams', href: '/teams' },
-  { name: 'Calendar', href: '/calendar' },
 ]
 
-function classNames(...classes) {
+function classNames(...classes: (string | undefined | boolean | null)[]): string {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Example() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status when component mounts
+    const checkAuth = async () => {
+      try {
+        const session = await authClient.getSession();
+        setIsAuthenticated(!!session);
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        setIsAuthenticated(false);
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
+  const handleAuthAction = async () => {
+    if (isAuthenticated) {
+      await authClient.signOut();
+      setIsAuthenticated(false);
+      router.push('/auth/sign-in');
+    } else {
+      router.push('/auth/sign-in');
+    }
+  };
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -100,12 +129,12 @@ export default function Example() {
                   </a>
                 </MenuItem>
                 <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                  <button
+                    onClick={handleAuthAction}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                   >
-                    Sign out
-                  </a>
+                    {isAuthenticated ? 'Sign in' : 'Sign Out'}
+                  </button>
                 </MenuItem>
               </MenuItems>
             </Menu>

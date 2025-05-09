@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 
 import { db } from "@/database/db"
-import * as schema from "@/database/index"
+import * as schema from "@/database/schema/auth" // this one can't be resolved until Neon is setup and we run pnpm auth:generate
 import { admin } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 

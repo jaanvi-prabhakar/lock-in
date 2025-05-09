@@ -1,164 +1,61 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import GoalCard from "@/components/GoalCard";
-
-interface Goal {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: string;
-  timeEstimate: string;
-  completed: boolean;
-}
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { db } from "@/database/db";
+import { goals } from "@/database/goals";
+import { eq } from "drizzle-orm";
+import { useEffect, useState } from 'react'
 
 export default function GoalsPage() {
-  const [goals, setGoals] = useState<Goal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [newGoal, setNewGoal] = useState({
-    title: "",
-    description: "",
-    difficulty: "",
-    timeEstimate: "",
-  });
+  const [goals, setGoals] = useState<any[]>([])
+  const [newGoal, setNewGoal] = useState('')
 
   useEffect(() => {
     async function fetchGoals() {
-      try {
-        const res = await fetch("/api/goals/my");
-        const data = await res.json();
-        setGoals(data.goals || []);
-      } catch (err) {
-        console.error("Failed to fetch goals:", err);
-      } finally {
-        setLoading(false);
+      const res = await fetch('/api/goals/my')
+      const data = await res.json()
+      if (!Array.isArray(data)) {
+        console.error("Expected array from /api/goals/my, but got:", data)
+        return
       }
+      setGoals(data)
     }
+    fetchGoals()
+  }, [])
 
-    fetchGoals();
-  }, []);
-
-  const currentGoals = goals.filter((goal) => !goal.completed);
-  const completedGoals = goals.filter((goal) => goal.completed);
+  async function handleAddGoal(e: React.FormEvent) {
+    e.preventDefault()
+    const res = await fetch('/api/goals/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newGoal })
+    })
+    if (!res.ok) return alert('Error creating goal')
+    const added = await res.json()
+    setGoals([...goals, added.goal])
+    setNewGoal('')
+  }
 
   return (
-    <div className="p-6 sm:p-12 max-w-5xl mx-auto space-y-10">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Your Goals</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          {showForm ? "Cancel" : "+ Add Goal"}
-        </button>
-      </div>
-
-      {showForm && (
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            try {
-              console.log("Submitting new goal:", newGoal);
-              const res = await fetch("/api/goals/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newGoal),
-                cache: "no-store",
-              });
-              console.log("Response:", res);
-              if (!res.ok) {
-                throw new Error("Failed to create goal");
-              }
-              const data = await res.json();
-              if (data.goal) {
-                setGoals((prevGoals) => [...prevGoals, data.goal]);
-                setShowForm(false);
-                setNewGoal({ title: "", description: "", difficulty: "", timeEstimate: "" });
-              } else {
-                console.error("No goal returned from API:", data);
-              }
-            } catch (err) {
-              console.error("Failed to add goal:", err);
-            }
-          }}
-          className="space-y-4 bg-white border p-4 rounded shadow-md"
-        >
-          <div>
-            <label className="block font-medium">Title</label>
-            <input
-              type="text"
-              value={newGoal.title}
-              onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
-              className="w-full border p-2 rounded text-black"
-              required
-            />
-          </div>
-          <div>
-            <label className="block font-medium">Description</label>
-            <textarea
-              value={newGoal.description}
-              onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
-              className="w-full border p-2 rounded text-black"
-              required
-            />
-          </div>
-          <div>
-            <label className="block font-medium">Difficulty</label>
-            <input
-              type="text"
-              value={newGoal.difficulty}
-              onChange={(e) => setNewGoal({ ...newGoal, difficulty: e.target.value })}
-              className="w-full border p-2 rounded text-black"
-              required
-            />
-          </div>
-          <div>
-            <label className="block font-medium">Time Estimate</label>
-            <input
-              type="text"
-              value={newGoal.timeEstimate}
-              onChange={(e) => setNewGoal({ ...newGoal, timeEstimate: e.target.value })}
-              className="w-full border p-2 rounded text-black"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-          >
-            Submit
-          </button>
-        </form>
-      )}
-
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Current Goals</h2>
-        {loading ? (
-          <p>Loading...</p>
-        ) : currentGoals.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentGoals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">No active goals yet.</p>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold mb-2">Completed Goals</h2>
-        {completedGoals.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {completedGoals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} completed />
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">No completed goals yet.</p>
-        )}
-      </section>
-    </div>
-  );
+    <main className="p-8">
+      <h1 className="text-2xl font-bold mb-4">My Goals</h1>
+      <form onSubmit={handleAddGoal} className="mb-6">
+        <input
+          type="text"
+          value={newGoal}
+          onChange={(e) => setNewGoal(e.target.value)}
+          placeholder="New goal"
+          className="border p-2 mr-2"
+          required
+        />
+        <button className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
+      </form>
+      <ul className="space-y-2">
+        {goals.map((goal) => (
+          <li key={goal.id} className="border p-4 rounded">{goal.title}</li>
+        ))}
+      </ul>
+    </main>
+  )
 }
