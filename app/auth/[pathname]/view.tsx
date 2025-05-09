@@ -13,7 +13,6 @@ export function AuthView({ pathname, redirectTo }: { pathname: string, redirectT
         if (!validPaths.includes(pathname)) {
             router.push("/auth/sign-in")
         }
-        router.refresh()
     }, [pathname, router])
 
     if (!validPaths.includes(pathname)) {
