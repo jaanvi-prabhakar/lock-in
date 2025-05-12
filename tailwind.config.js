@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import tailwindcssAnimate from 'tailwindcss-animate';
+import tailwindcssSafeArea from 'tailwindcss-safe-area';
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,8 +10,5 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [
-    require('tailwindcss-animate'),
-    require('tailwindcss-safe-area'),
-  ],
-} 
+  plugins: [tailwindcssAnimate, tailwindcssSafeArea],
+};
