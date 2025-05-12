@@ -9,6 +9,14 @@ const DIFFICULTY_XP = {
   hard: 50,
 };
 
+// Default stats with zero values
+const DEFAULT_STATS = {
+  totalXP: 0,
+  streak: 0,
+  todayXP: 0,
+  weeklyXP: [0, 0, 0, 0, 0, 0, 0], // All zeros for Mon-Sun
+};
+
 export async function GET(req: NextRequest) {
   try {
     // Check authentication
@@ -17,8 +25,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Get base URL for API requests
+    // Try to use window.location.origin first, fallback to env var or request origin
+    const baseUrl = req.nextUrl?.origin || process.env.NEXT_PUBLIC_BASE_URL || '';
+    
     // Fetch goals from your existing endpoint
-    const goalsRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/goals/my`, {
+    const goalsRes = await fetch(`${baseUrl}/api/goals/my`, {
       headers: {
         Cookie: req.headers.get('cookie') || '',
       },
@@ -31,24 +43,21 @@ export async function GET(req: NextRequest) {
 
     const goalsData = await goalsRes.json();
     
-    // Simulate check-in status (in a real app, you'd get this from a database)
-    // Get today's date
-    const today = new Date().toISOString().split('T')[0];
-    
-    // For this demo, we'll just mark all goals as not checked in yet
-    // In a real app, you'd fetch this from your database
+    // Add checkedInToday property to each goal
+    // In a real app, this would come from your database
     const goalsWithCheckInStatus = (goalsData.goals || []).map((goal: any) => ({
       ...goal,
       checkedInToday: false, // Default to false - in production this would come from DB
     }));
 
-    // Mock user stats - in a real app, you'd get this from your database
-    const userStats = {
-      totalXP: 1220,
-      streak: 7,
-      todayXP: 0,
-      weeklyXP: [40, 60, 80, 30, 90, 70, 50], // Example data
-    };
+    // In a real implementation, you would:
+    // 1. Fetch user stats from your database
+    // 2. Calculate streak based on check-in history
+    // 3. Calculate today's XP based on today's check-ins
+    // 4. Calculate weekly XP based on the last 7 days of check-ins
+    
+    // For now, use the default zero values
+    const userStats = { ...DEFAULT_STATS };
 
     return NextResponse.json({
       goals: goalsWithCheckInStatus,

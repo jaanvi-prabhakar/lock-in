@@ -20,6 +20,14 @@ interface Goal {
   checkedInToday?: boolean;
 }
 
+// Stats interface for type safety
+interface UserStats {
+  totalXP: number;
+  streak: number;
+  todayXP: number;
+  weeklyXP: number[];
+}
+
 // Map difficulty to XP values
 const DIFFICULTY_XP = {
   easy: 10,
@@ -27,13 +35,19 @@ const DIFFICULTY_XP = {
   hard: 50,
 };
 
+// Default weekly data (all zeros)
+const DEFAULT_WEEKLY_XP = [0, 0, 0, 0, 0, 0, 0];
+
 export default function DashboardPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [totalXP, setTotalXP] = useState(1220);
-  const [dayStreak, setDayStreak] = useState(7);
+  
+  // Initialize all stats with zero values
+  const [totalXP, setTotalXP] = useState(0);
+  const [dayStreak, setDayStreak] = useState(0);
   const [dailyXP, setDailyXP] = useState(0);
+  const [weeklyXP, setWeeklyXP] = useState(DEFAULT_WEEKLY_XP);
 
   useEffect(() => {
     fetchGoals();
@@ -48,23 +62,26 @@ export default function DashboardPage() {
         return;
       }
 
+      // Get the base URL dynamically
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      
       // Fetch goals with check-in status from your API
-      const res = await fetch('/api/goals/dashboard');
+      const res = await fetch(`${baseUrl}/api/goals/dashboard`);
       const data = await res.json();
       
       if (res.ok) {
+        // Set goals
         setGoals(data.goals || []);
         
-        // Update stats
+        // Update stats if available from API
         if (data.stats) {
-          setTotalXP(data.stats.totalXP);
-          setDayStreak(data.stats.streak);
-          setDailyXP(data.stats.todayXP);
+          setTotalXP(data.stats.totalXP || 0);
+          setDayStreak(data.stats.streak || 0);
+          setDailyXP(data.stats.todayXP || 0);
           
-          // Update weekly XP chart if available
+          // Set weekly XP data if available, otherwise use zeros
           if (data.stats.weeklyXP && Array.isArray(data.stats.weeklyXP)) {
-            // This would update your weekly chart
-            // For now we're keeping the existing chart data
+            setWeeklyXP(data.stats.weeklyXP);
           }
         }
       } else {
@@ -80,8 +97,11 @@ export default function DashboardPage() {
 
   async function handleCheckIn(goalId: string) {
     try {
+      // Get the base URL dynamically
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      
       // Call the API to record the check-in
-      const res = await fetch('/api/goals/check-in', {
+      const res = await fetch(`${baseUrl}/api/goals/check-in`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goalId })
@@ -100,21 +120,37 @@ export default function DashboardPage() {
         
         setGoals(updatedGoals);
         
-        // Find the goal to determine its XP value
-        const checkInGoal = goals.find(g => g.id === goalId);
-        const xpEarned = checkInGoal ? DIFFICULTY_XP[checkInGoal.difficulty as "easy" | "medium" | "hard"] : 0;
+        // Use XP earned from API response if available
+        const xpEarned = data.checkIn?.xpEarned || 0;
         
         // Update stats
         setTotalXP(prev => prev + xpEarned);
         setDailyXP(prev => prev + xpEarned);
-        setDayStreak(prev => prev + 1); // Increment streak (the actual logic is in the API)
         
-        // Show success toast or notification here if you have that functionality
+        // Update streak from API if available, otherwise increment
+        if (data.newStreak) {
+          setDayStreak(data.newStreak);
+        } else {
+          setDayStreak(prev => prev + 1);
+        }
+        
+        // Update weekly XP if available
+        if (data.updatedWeeklyXP && Array.isArray(data.updatedWeeklyXP)) {
+          setWeeklyXP(data.updatedWeeklyXP);
+        } else {
+          // If not available, update the current day's XP
+          const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+          const dayIndex = today === 0 ? 6 : today - 1; // Convert to 0 = Monday, 6 = Sunday
+          
+          setWeeklyXP(prev => {
+            const updated = [...prev];
+            updated[dayIndex] += xpEarned;
+            return updated;
+          });
+        }
       } else {
         // Handle error - could be already checked in or other issue
         setError(data.error || 'Failed to check in');
-        
-        // If you have a toast/notification system, show error message
         console.error('Check-in failed:', data.error);
       }
     } catch (err) {
@@ -145,9 +181,22 @@ export default function DashboardPage() {
                 <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
               </div>
               <div className="flex justify-between items-end mt-2 h-24">
-                {[40, 60, 80, 30, 90, 70, 50].map((height, i) => (
-                  <div key={i} className="w-3 bg-blue-500 rounded" style={{ height: `${height}%` }}></div>
-                ))}
+                {weeklyXP.map((xp, i) => {
+                  // Calculate height percentage based on XP value
+                  // If all values are 0, show minimal height
+                  const maxXP = Math.max(...weeklyXP);
+                  const heightPercent = maxXP > 0 ? (xp / maxXP) * 100 : 0;
+                  
+                  return (
+                    <div 
+                      key={i} 
+                      className="w-3 bg-blue-500 rounded" 
+                      style={{ 
+                        height: heightPercent > 0 ? `${heightPercent}%` : '5%'
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
