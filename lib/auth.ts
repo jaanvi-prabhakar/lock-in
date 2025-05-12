@@ -28,4 +28,5 @@ export const auth = betterAuth({
     requireEmailVerification: false,
   },
   plugins: [nextCookies()],
+  trustedOrigins: ['http://localhost:3001', 'https://lock-in-ten.vercel.app'],
 });

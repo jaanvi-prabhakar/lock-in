@@ -1,8 +1,23 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 
 export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const check = async () => {
+      const session = await authClient.getSession();
+      if (session) {
+        router.replace('/dashboard');
+      }
+    };
+    check();
+  }, [router]);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900">
       <div className="text-center max-w-2xl px-4">
