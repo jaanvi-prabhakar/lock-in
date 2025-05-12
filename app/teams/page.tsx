@@ -1,46 +1,46 @@
-"use client";
+'use client';
 
-import { useState } from "react"
-import { createTeam, joinTeam } from "@/actions/teams"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from 'react';
+import { createTeam, joinTeam } from '@/actions/teams';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function TeamsPage() {
-  const [createError, setCreateError] = useState("")
-  const [joinError, setJoinError] = useState("")
-  const [inviteCode, setInviteCode] = useState("")
+  const [createError, setCreateError] = useState('');
+  const [joinError, setJoinError] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
 
   const teamMembers = [
-    { name: "Audrey", xp: 1250 },
-    { name: "Xiaochen", xp: 980 },
-    { name: "Jaanvi", xp: 860 },
+    { name: 'Audrey', xp: 1250 },
+    { name: 'Xiaochen', xp: 980 },
+    { name: 'Jaanvi', xp: 860 },
   ];
 
   const leaderboard = [
-    { team: "Lock-In Legends", xp: 3090 },
-    { team: "Code Crushers", xp: 2890 },
-    { team: "Bug Slayers", xp: 2700 },
+    { team: 'Lock-In Legends', xp: 3090 },
+    { team: 'Code Crushers', xp: 2890 },
+    { team: 'Bug Slayers', xp: 2700 },
   ];
 
   const totalTeamXP = teamMembers.reduce((sum, member) => sum + member.xp, 0);
   const teamGoalXP = 5000;
 
   async function handleCreateTeam(formData: FormData) {
-    const result = await createTeam(formData)
+    const result = await createTeam(formData);
     if (result.error) {
-      setCreateError(result.error)
+      setCreateError(result.error);
     } else {
-      setCreateError("")
-      setInviteCode(result.inviteCode)
+      setCreateError('');
+      setInviteCode(result.inviteCode);
     }
   }
 
   async function handleJoinTeam(formData: FormData) {
-    const result = await joinTeam(formData)
+    const result = await joinTeam(formData);
     if (result.error) {
-      setJoinError(result.error)
+      setJoinError(result.error);
     } else {
-      setJoinError("")
+      setJoinError('');
     }
   }
 
@@ -67,9 +67,7 @@ export default function TeamsPage() {
             <Button type="submit" className="w-full">
               Create Team
             </Button>
-            {createError && (
-              <p className="text-red-500 text-sm mt-2">{createError}</p>
-            )}
+            {createError && <p className="text-red-500 text-sm mt-2">{createError}</p>}
             {inviteCode && (
               <div className="mt-4 p-4 bg-green-50 rounded-md">
                 <p className="text-green-800 font-medium">Team created successfully!</p>
@@ -101,9 +99,7 @@ export default function TeamsPage() {
             <Button type="submit" className="w-full">
               Join Team
             </Button>
-            {joinError && (
-              <p className="text-red-500 text-sm mt-2">{joinError}</p>
-            )}
+            {joinError && <p className="text-red-500 text-sm mt-2">{joinError}</p>}
           </form>
         </div>
       </div>
@@ -113,8 +109,12 @@ export default function TeamsPage() {
 
         <section className="mb-8 bg-white p-6 rounded shadow">
           <h2 className="text-xl font-semibold mb-4">Team: Lock-In Legends</h2>
-          <p className="text-gray-600 mb-2">Invite Code: <span className="font-mono text-blue-700">ABC123</span></p>
-          <p className="text-gray-600 mb-2">Total Team XP: <strong>{totalTeamXP}</strong> / {teamGoalXP}</p>
+          <p className="text-gray-600 mb-2">
+            Invite Code: <span className="font-mono text-blue-700">ABC123</span>
+          </p>
+          <p className="text-gray-600 mb-2">
+            Total Team XP: <strong>{totalTeamXP}</strong> / {teamGoalXP}
+          </p>
 
           <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
             <div

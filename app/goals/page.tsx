@@ -1,71 +1,71 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { authClient } from "@/lib/auth-client"
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 
 interface Goal {
-  id: string
-  title: string
-  description: string
-  difficulty: string
-  timeEstimate: number
-  completed: boolean
-  createdAt: string
+  id: string;
+  title: string;
+  description: string;
+  difficulty: string;
+  timeEstimate: number;
+  completed: boolean;
+  createdAt: string;
 }
 
 export default function GoalsPage() {
-  const router = useRouter()
-  const [goals, setGoals] = useState<Goal[]>([])
-  const [error, setError] = useState<string>('')
-  const [loading, setLoading] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  
+  const router = useRouter();
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   // Form states
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [difficulty, setDifficulty] = useState('medium')
-  const [timeEstimate, setTimeEstimate] = useState('30')
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [difficulty, setDifficulty] = useState('medium');
+  const [timeEstimate, setTimeEstimate] = useState('30');
 
   useEffect(() => {
-    checkAuth()
-  }, [])
+    checkAuth();
+  }, []);
 
   async function checkAuth() {
     try {
-      const session = await authClient.getSession()
+      const session = await authClient.getSession();
       if (!session) {
-        router.push('/auth/sign-in')
-        return
+        router.push('/auth/sign-in');
+        return;
       }
-      setIsAuthenticated(true)
-      fetchGoals()
+      setIsAuthenticated(true);
+      fetchGoals();
     } catch (err) {
-      console.error('Auth error:', err)
-      router.push('/auth/sign-in')
+      console.error('Auth error:', err);
+      router.push('/auth/sign-in');
     }
   }
 
   async function fetchGoals() {
     try {
-      const res = await fetch('/api/goals/my')
-      const data = await res.json()
-      
+      const res = await fetch('/api/goals/my');
+      const data = await res.json();
+
       if (res.ok) {
-        setGoals(data.goals || [])
+        setGoals(data.goals || []);
       } else {
-        setError(data.error || 'Failed to fetch goals')
+        setError(data.error || 'Failed to fetch goals');
       }
     } catch (err) {
-      setError('Failed to fetch goals')
-      console.error(err)
+      setError('Failed to fetch goals');
+      console.error(err);
     }
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
     try {
       const res = await fetch('/api/goals/create', {
@@ -75,27 +75,27 @@ export default function GoalsPage() {
           title,
           description,
           difficulty,
-          timeEstimate: parseInt(timeEstimate)
-        })
-      })
+          timeEstimate: parseInt(timeEstimate),
+        }),
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (res.ok) {
-        setGoals(prev => [...prev, data.goal])
+        setGoals((prev) => [...prev, data.goal]);
         // Reset form
-        setTitle('')
-        setDescription('')
-        setDifficulty('medium')
-        setTimeEstimate('30')
+        setTitle('');
+        setDescription('');
+        setDifficulty('medium');
+        setTimeEstimate('30');
       } else {
-        setError(data.error || 'Failed to create goal')
+        setError(data.error || 'Failed to create goal');
       }
     } catch (err) {
-      setError('Failed to create goal')
-      console.error(err)
+      setError('Failed to create goal');
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -104,26 +104,24 @@ export default function GoalsPage() {
       const res = await fetch('/api/goals/toggle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goalId, completed: !currentStatus })
-      })
+        body: JSON.stringify({ goalId, completed: !currentStatus }),
+      });
 
       if (res.ok) {
-        setGoals(prev => prev.map(goal => 
-          goal.id === goalId 
-            ? { ...goal, completed: !goal.completed }
-            : goal
-        ))
+        setGoals((prev) =>
+          prev.map((goal) => (goal.id === goalId ? { ...goal, completed: !goal.completed } : goal))
+        );
       } else {
-        setError('Failed to update goal')
+        setError('Failed to update goal');
       }
     } catch (err) {
-      console.error('Error updating goal:', err)
-      setError('Failed to update goal')
+      console.error('Error updating goal:', err);
+      setError('Failed to update goal');
     }
   }
 
   if (!isAuthenticated) {
-    return <div className="p-8">Checking authentication...</div>
+    return <div className="p-8">Checking authentication...</div>;
   }
 
   return (
@@ -136,7 +134,10 @@ export default function GoalsPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mb-8 space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mb-8 space-y-4"
+      >
         <div>
           <label htmlFor="title" className="block text-sm font-medium mb-1">
             Title
@@ -211,13 +212,15 @@ export default function GoalsPage() {
           <div
             key={goal.id}
             className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border ${
-              goal.completed 
-                ? 'border-green-500 dark:border-green-700' 
+              goal.completed
+                ? 'border-green-500 dark:border-green-700'
                 : 'border-gray-200 dark:border-gray-700'
             }`}
           >
             <div className="flex justify-between items-start mb-2">
-              <h3 className={`text-xl font-semibold ${goal.completed ? 'line-through text-gray-500' : ''}`}>
+              <h3
+                className={`text-xl font-semibold ${goal.completed ? 'line-through text-gray-500' : ''}`}
+              >
                 {goal.title}
               </h3>
               <button
@@ -232,7 +235,9 @@ export default function GoalsPage() {
               </button>
             </div>
             {goal.description && (
-              <p className={`text-gray-600 dark:text-gray-400 mb-4 text-sm ${goal.completed ? 'line-through' : ''}`}>
+              <p
+                className={`text-gray-600 dark:text-gray-400 mb-4 text-sm ${goal.completed ? 'line-through' : ''}`}
+              >
                 {goal.description}
               </p>
             )}
@@ -244,5 +249,5 @@ export default function GoalsPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }

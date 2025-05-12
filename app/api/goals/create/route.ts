@@ -2,7 +2,7 @@ import { db } from '@/database/db';
 import { goals } from '@/database/goals';
 import { auth } from '@/lib/auth';
 import { NextResponse } from 'next/server';
-import { headers } from "next/headers"
+import { headers } from 'next/headers';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,12 +14,12 @@ export async function POST(req: NextRequest) {
 
     // Parse request body
     const { title, description, difficulty, timeEstimate } = await req.json();
-    
+
     // Validate required fields
     if (!title) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
-    
+
     // Create a goal object with a generated ID
     // In a real implementation, you would save this to your database
     const goal = {
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    
+
     // If you have a direct way to create goals in your database, use that instead
     // For example, if you're using Prisma:
     // const goal = await prisma.goal.create({

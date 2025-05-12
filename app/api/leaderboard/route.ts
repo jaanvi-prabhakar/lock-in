@@ -10,7 +10,7 @@ async function getUserLeaderboard(limit = 10) {
       id: users.id,
       name: users.name,
       currentXP: users.currentXP,
-      level: users.level
+      level: users.level,
     })
     .from(users)
     .orderBy(desc(users.currentXP))
@@ -25,7 +25,7 @@ async function getTeamLeaderboard(limit = 10) {
     .select({
       id: teams.id,
       name: teams.name,
-      totalXP: teams.totalXP
+      totalXP: teams.totalXP,
     })
     .from(teams)
     .orderBy(desc(teams.totalXP))
@@ -35,7 +35,7 @@ async function getTeamLeaderboard(limit = 10) {
 }
 
 // Main handler
-// Example usage: GET /api/leaderboard?type=teams&limit=5 (top 5 teams) 
+// Example usage: GET /api/leaderboard?type=teams&limit=5 (top 5 teams)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get('type') || 'users'; // 'users' or 'teams'

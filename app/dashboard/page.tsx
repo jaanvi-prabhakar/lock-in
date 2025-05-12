@@ -6,14 +6,14 @@ import Image from 'next/image';
 import GoalCard from '@/components/GoalCard';
 import XPBadge from '@/components/XPBadge';
 import Link from 'next/link';
-import { authClient } from "@/lib/auth-client";
+import { authClient } from '@/lib/auth-client';
 
 // Goal interface matching your existing structure
 interface Goal {
   id: string;
   title: string;
   description: string;
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: 'easy' | 'medium' | 'hard';
   timeEstimate: number;
   completed: boolean;
   createdAt: string;
@@ -42,7 +42,7 @@ export default function DashboardPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   // Initialize all stats with zero values
   const [totalXP, setTotalXP] = useState(0);
   const [dayStreak, setDayStreak] = useState(0);
@@ -64,21 +64,21 @@ export default function DashboardPage() {
 
       // Get the base URL dynamically
       const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-      
+
       // Fetch goals with check-in status from your API
       const res = await fetch(`${baseUrl}/api/goals/dashboard`);
       const data = await res.json();
-      
+
       if (res.ok) {
         // Set goals
         setGoals(data.goals || []);
-        
+
         // Update stats if available from API
         if (data.stats) {
           setTotalXP(data.stats.totalXP || 0);
           setDayStreak(data.stats.streak || 0);
           setDailyXP(data.stats.todayXP || 0);
-          
+
           // Set weekly XP data if available, otherwise use zeros
           if (data.stats.weeklyXP && Array.isArray(data.stats.weeklyXP)) {
             setWeeklyXP(data.stats.weeklyXP);
@@ -99,41 +99,41 @@ export default function DashboardPage() {
     try {
       // Get the base URL dynamically
       const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-      
+
       // Call the API to record the check-in
       const res = await fetch(`${baseUrl}/api/goals/check-in`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goalId })
+        body: JSON.stringify({ goalId }),
       });
-      
+
       const data = await res.json();
-      
+
       if (res.ok) {
         // Update the goal's check-in status in the UI
-        const updatedGoals = goals.map(goal => {
+        const updatedGoals = goals.map((goal) => {
           if (goal.id === goalId) {
             return { ...goal, checkedInToday: true };
           }
           return goal;
         });
-        
+
         setGoals(updatedGoals);
-        
+
         // Use XP earned from API response if available
         const xpEarned = data.checkIn?.xpEarned || 0;
-        
+
         // Update stats
-        setTotalXP(prev => prev + xpEarned);
-        setDailyXP(prev => prev + xpEarned);
-        
+        setTotalXP((prev) => prev + xpEarned);
+        setDailyXP((prev) => prev + xpEarned);
+
         // Update streak from API if available, otherwise increment
         if (data.newStreak) {
           setDayStreak(data.newStreak);
         } else {
-          setDayStreak(prev => prev + 1);
+          setDayStreak((prev) => prev + 1);
         }
-        
+
         // Update weekly XP if available
         if (data.updatedWeeklyXP && Array.isArray(data.updatedWeeklyXP)) {
           setWeeklyXP(data.updatedWeeklyXP);
@@ -141,8 +141,8 @@ export default function DashboardPage() {
           // If not available, update the current day's XP
           const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
           const dayIndex = today === 0 ? 6 : today - 1; // Convert to 0 = Monday, 6 = Sunday
-          
-          setWeeklyXP(prev => {
+
+          setWeeklyXP((prev) => {
             const updated = [...prev];
             updated[dayIndex] += xpEarned;
             return updated;
@@ -160,7 +160,7 @@ export default function DashboardPage() {
   }
 
   // Filter active (incomplete) goals
-  const activeGoals = goals.filter(goal => !goal.completed);
+  const activeGoals = goals.filter((goal) => !goal.completed);
 
   return (
     <ProtectedRoute>
@@ -178,7 +178,13 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-semibold mb-4 text-left">Weekly XP Progress</h2>
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
               <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
               </div>
               <div className="flex justify-between items-end mt-2 h-24">
                 {weeklyXP.map((xp, i) => {
@@ -186,13 +192,13 @@ export default function DashboardPage() {
                   // If all values are 0, show minimal height
                   const maxXP = Math.max(...weeklyXP);
                   const heightPercent = maxXP > 0 ? (xp / maxXP) * 100 : 0;
-                  
+
                   return (
-                    <div 
-                      key={i} 
-                      className="w-3 bg-blue-500 rounded" 
-                      style={{ 
-                        height: heightPercent > 0 ? `${heightPercent}%` : '5%'
+                    <div
+                      key={i}
+                      className="w-3 bg-blue-500 rounded"
+                      style={{
+                        height: heightPercent > 0 ? `${heightPercent}%` : '5%',
                       }}
                     />
                   );
@@ -223,14 +229,14 @@ export default function DashboardPage() {
         <section className="max-w-3xl mx-auto mb-10">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">Daily Check-ins</h2>
-            <Link 
-              href="/goals" 
+            <Link
+              href="/goals"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
             >
               Manage Goals
             </Link>
           </div>
-          
+
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -238,9 +244,11 @@ export default function DashboardPage() {
             </div>
           ) : activeGoals.length === 0 ? (
             <div className="text-center py-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-              <p className="text-gray-500 dark:text-gray-400 mb-4">You don't have any active goals.</p>
-              <Link 
-                href="/goals" 
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                You don't have any active goals.
+              </p>
+              <Link
+                href="/goals"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
               >
                 Create Your First Goal
@@ -254,7 +262,7 @@ export default function DashboardPage() {
                   id={goal.id}
                   title={goal.title}
                   description={goal.description}
-                  difficulty={goal.difficulty as "easy" | "medium" | "hard"}
+                  difficulty={goal.difficulty as 'easy' | 'medium' | 'hard'}
                   timeEstimate={`${goal.timeEstimate} mins`}
                   checkedInToday={goal.checkedInToday || false}
                   onCheckIn={handleCheckIn}

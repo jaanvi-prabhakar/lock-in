@@ -1,13 +1,10 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import { authClient } from "@/lib/auth-client"; //import the auth client
+import { authClient } from '@/lib/auth-client'; //import the auth client
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { 
-  Bars3Icon, 
-  XMarkIcon
-} from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Fragment } from 'react';
 
@@ -15,10 +12,10 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Goals', href: '/goals' },
   { name: 'Teams', href: '/teams' },
-]
+];
 
 function classNames(...classes: (string | undefined | boolean | null)[]): string {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function Navbar() {
@@ -43,14 +40,14 @@ export default function Navbar() {
         setIsLoading(false);
       }
     };
-    
+
     checkAuth();
-    
+
     // Add a listener for changes in localStorage to detect sign out in other tabs
     const handleStorageChange = () => {
       checkAuth();
     };
-    
+
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
@@ -78,7 +75,7 @@ export default function Navbar() {
       // Show nothing while loading to prevent flashing
       return null;
     }
-    
+
     if (isAuthenticated) {
       return (
         <button
@@ -121,14 +118,10 @@ export default function Navbar() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex shrink-0 items-center">
                   <Link
-                    href={isAuthenticated ? "/dashboard" : "/"}
+                    href={isAuthenticated ? '/dashboard' : '/'}
                     className="cursor-pointer hover:opacity-80 transition-opacity"
                   >
-                    <img
-                      alt="Lock-in"
-                      src="/images/lock-in.png"
-                      className="h-8 w-auto"
-                    />
+                    <img alt="Lock-in" src="/images/lock-in.png" className="h-8 w-auto" />
                   </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
@@ -139,8 +132,10 @@ export default function Navbar() {
                         href={item.href}
                         aria-current={pathname === item.href ? 'page' : undefined}
                         className={classNames(
-                          pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium',
+                          pathname === item.href
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          'rounded-md px-3 py-2 text-sm font-medium'
                         )}
                       >
                         {item.name}
@@ -160,11 +155,7 @@ export default function Navbar() {
                       <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          alt=""
-                          src="/images/mario.jpeg"
-                          className="h-8 w-8 rounded-full"
-                        />
+                        <img alt="" src="/images/mario.jpeg" className="h-8 w-8 rounded-full" />
                       </Menu.Button>
                     </div>
                     <Transition
@@ -219,7 +210,9 @@ export default function Navbar() {
                   as="a"
                   href={item.href}
                   className={classNames(
-                    pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    pathname === item.href
+                      ? 'bg-gray-900 text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                   aria-current={pathname === item.href ? 'page' : undefined}
@@ -232,5 +225,5 @@ export default function Navbar() {
         </>
       )}
     </Disclosure>
-  )
+  );
 }

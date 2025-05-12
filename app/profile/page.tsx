@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 // allow profile pictures to be upload-able
 
 export default function ProfilePage() {
-  const [preview, setPreview] = useState("/images/mario.jpeg");
+  const [preview, setPreview] = useState('/images/mario.jpeg');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,18 +21,18 @@ export default function ProfilePage() {
     if (!selectedFile) return;
 
     const formData = new FormData();
-    formData.append("image", selectedFile);
+    formData.append('image', selectedFile);
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
+    const res = await fetch('/api/upload', {
+      method: 'POST',
       body: formData,
     });
 
     if (res.ok) {
-      alert("Image uploaded successfully");
+      alert('Image uploaded successfully');
       // how to refetch user data here?
     } else {
-      alert("Image upload failed");
+      alert('Image upload failed');
     }
   };
 
@@ -82,7 +82,7 @@ export default function ProfilePage() {
             <button
               type="button"
               className="mt-1 px-4 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 self-start"
-              onClick={() => alert("Name saved (mock behavior)")}
+              onClick={() => alert('Name saved (mock behavior)')}
             >
               Save Name
             </button>
