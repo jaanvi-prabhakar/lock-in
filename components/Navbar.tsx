@@ -72,27 +72,36 @@ export default function Navbar() {
 
   const renderAuthButton = () => {
     if (isLoading) {
-      // Show nothing while loading to prevent flashing
       return null;
     }
 
     if (isAuthenticated) {
       return (
-        <button
-          onClick={handleAuthAction}
-          className="bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium py-1.5 px-4 rounded-md transition-colors duration-200 mx-2 flex items-center"
-        >
-          <span>Log Out</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleAuthAction}
+            className="bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium py-1.5 px-4 rounded-md transition-colors duration-200"
+          >
+            Sign Out
+          </button>
+        </div>
       );
     } else {
       return (
-        <button
-          onClick={handleAuthAction}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-4 rounded-md transition-colors duration-200 mx-2"
-        >
-          Sign In
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/auth/sign-in"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-4 rounded-md transition-colors duration-200"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/auth/sign-up"
+            className="bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium py-1.5 px-4 rounded-md transition-colors duration-200"
+          >
+            Sign Up
+          </Link>
+        </div>
       );
     }
   };
@@ -145,11 +154,8 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {/* Sign In/Log Out Button - Always rendered with the correct state */}
                 {renderAuthButton()}
-
-                {/* Profile dropdown - only show if authenticated */}
-                {!isLoading && isAuthenticated && (
+                {isAuthenticated && (
                   <Menu as="div" className="relative ml-3">
                     <div>
                       <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
