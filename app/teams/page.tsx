@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Copy, Users, Award, Zap, Share2 } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 // Animation variants
 const containerVariants = {
@@ -565,6 +566,7 @@ export default function TeamsPage() {
           </motion.div>
         </motion.div>
       </div>
+      <Footer />
     </motion.div>
   );
 }

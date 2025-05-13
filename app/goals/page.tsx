@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { v4 as uuidv4 } from 'uuid'; // You may need to install this package
+import { getStoredGoals, saveGoals, addGoal, toggleGoalCompletion } from '@/lib/mockData';
+import Footer from '@/components/Footer';
 
 interface Goal {
   id: string;
@@ -27,6 +30,9 @@ export default function GoalsPage() {
   const [difficulty, setDifficulty] = useState('medium');
   const [timeEstimate, setTimeEstimate] = useState('30');
 
+  // Flag to use mock data instead of real API
+  const useMockData = true;
+
   useEffect(() => {
     checkAuth();
   }, []);
@@ -47,6 +53,13 @@ export default function GoalsPage() {
   }
 
   async function fetchGoals() {
+    if (useMockData) {
+      // Use mock data
+      console.log('Using mock goals data');
+      setGoals(getStoredGoals());
+      return;
+    }
+
     try {
       const res = await fetch('/api/goals/my');
       const data = await res.json();
@@ -66,6 +79,28 @@ export default function GoalsPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (useMockData) {
+      // Mock the goal creation
+      setTimeout(() => {
+        const newGoal = addGoal({
+          title,
+          description,
+          difficulty,
+          timeEstimate: parseInt(timeEstimate),
+        });
+
+        setGoals(getStoredGoals());
+        
+        // Reset form
+        setTitle('');
+        setDescription('');
+        setDifficulty('medium');
+        setTimeEstimate('30');
+        setLoading(false);
+      }, 800); // Add a small delay to simulate API call
+      return;
+    }
 
     try {
       const res = await fetch('/api/goals/create', {
@@ -99,7 +134,14 @@ export default function GoalsPage() {
     }
   }
 
-  async function toggleGoalCompletion(goalId: string, currentStatus: boolean) {
+  async function handleToggleGoalCompletion(goalId: string, currentStatus: boolean) {
+    if (useMockData) {
+      // Mock toggle completion status using shared logic
+      const updatedGoals = toggleGoalCompletion(goalId);
+      setGoals(updatedGoals);
+      return;
+    }
+
     try {
       const res = await fetch('/api/goals/toggle', {
         method: 'POST',
@@ -224,7 +266,7 @@ export default function GoalsPage() {
                 {goal.title}
               </h3>
               <button
-                onClick={() => toggleGoalCompletion(goal.id, goal.completed)}
+                onClick={() => handleToggleGoalCompletion(goal.id, goal.completed)}
                 className={`px-2 py-1 rounded text-sm ${
                   goal.completed
                     ? 'bg-green-100 text-green-700 hover:bg-green-200'
@@ -248,6 +290,7 @@ export default function GoalsPage() {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 }
