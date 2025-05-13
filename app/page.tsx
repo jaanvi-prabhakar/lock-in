@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Shield, Target, Calendar, Star } from 'lucide-react';
 import Footer from '@/components/Footer';
 
-// Animation variants
+// animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -38,7 +38,7 @@ const featureVariants = {
   }
 };
 
-// Hero background animation
+// hero background animation
 const backgroundVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: {
@@ -63,7 +63,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setMounted(true);
-    // We're still checking authentication but NOT automatically redirecting
+    // we're still checking authentication but NOT automatically redirecting
     const check = async () => {
       // This just sets mounted to true, no authentication check or redirect
     };
@@ -106,7 +106,7 @@ export default function HomePage() {
       variants={containerVariants}
     >
       {/* Hero Section */}
-      <section className="relative flex-grow flex flex-col items-center justify-center bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden px-4 sm:px-6">
+      <section className="relative flex-grow flex flex-col items-center justify-center bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden px-4 sm:px-6 py-16 md:py-18">
         {/* Animated background elements */}
         <motion.div 
           className="absolute inset-0 overflow-hidden pointer-events-none"
