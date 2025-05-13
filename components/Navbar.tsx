@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Goals', href: '/goals' },
   { name: 'Teams', href: '/teams' },
+  { name: 'Calendar', href: '/calendar' },
 ];
 
 function classNames(...classes: (string | undefined | boolean | null)[]): string {
