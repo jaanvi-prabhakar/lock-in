@@ -24,6 +24,7 @@ import {
   Trash2,
   AlertCircle
 } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 // Type definitions
 interface Task {
@@ -699,105 +700,137 @@ export default function CalendarPage() {
   };
   
   return (
-    <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-blue-50 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-white transition-colors duration-200">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
-              Task Planner
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Organize, prioritize, and track your tasks
-            </p>
+    <div className="flex flex-col min-h-screen">
+      <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-blue-50 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-white transition-colors duration-200">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div>
+              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                Task Planner
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 mt-1">
+                Organize, prioritize, and track your tasks
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <motion.button
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                  viewMode === 'week' 
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                }`}
+                onClick={() => setViewMode('week')}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                <CalendarDays className="h-4 w-4 inline-block mr-1" />
+                Week
+              </motion.button>
+              
+              <motion.button
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                  viewMode === 'month' 
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                }`}
+                onClick={() => setViewMode('month')}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                <Calendar className="h-4 w-4 inline-block mr-1" />
+                Month
+              </motion.button>
+              
+              <motion.button
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                  viewMode === 'board' 
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                }`}
+                onClick={() => setViewMode('board')}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                <LayoutGrid className="h-4 w-4 inline-block mr-1" />
+                Board
+              </motion.button>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <motion.button
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                viewMode === 'week' 
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-              }`}
-              onClick={() => setViewMode('week')}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-            >
-              <CalendarDays className="h-4 w-4 inline-block mr-1" />
-              Week
-            </motion.button>
-            
-            <motion.button
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                viewMode === 'month' 
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-              }`}
-              onClick={() => setViewMode('month')}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-            >
-              <Calendar className="h-4 w-4 inline-block mr-1" />
-              Month
-            </motion.button>
-            
-            <motion.button
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                viewMode === 'board' 
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-              }`}
-              onClick={() => setViewMode('board')}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-            >
-              <LayoutGrid className="h-4 w-4 inline-block mr-1" />
-              Board
-            </motion.button>
-          </div>
-        </div>
-        
-        {(viewMode === 'week' || viewMode === 'month') && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 mb-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <motion.button
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={goToPrevious}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                </motion.button>
+          {(viewMode === 'week' || viewMode === 'month') && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 mb-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <motion.button
+                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={goToPrevious}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                  </motion.button>
+                  
+                  <h2 className="text-xl font-semibold mx-4">
+                    {viewMode === 'week' 
+                      ? `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')} - ${format(endOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d, yyyy')}`
+                      : format(currentDate, 'MMMM yyyy')
+                    }
+                  </h2>
+                  
+                  <motion.button
+                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={goToNext}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                  </motion.button>
+                </div>
                 
-                <h2 className="text-xl font-semibold mx-4">
-                  {viewMode === 'week' 
-                    ? `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')} - ${format(endOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d, yyyy')}`
-                    : format(currentDate, 'MMMM yyyy')
-                  }
-                </h2>
-                
-                <motion.button
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={goToNext}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                </motion.button>
+                <div className="flex items-center">
+                  <motion.button
+                    className="px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg font-medium"
+                    onClick={goToToday}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Today
+                  </motion.button>
+                  
+                  <motion.button
+                    className="ml-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center"
+                    onClick={() => openTaskModal()}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    New Task
+                  </motion.button>
+                </div>
               </div>
               
-              <div className="flex items-center">
-                <motion.button
-                  className="px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg font-medium"
-                  onClick={goToToday}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={viewMode + currentDate.toString()}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Today
-                </motion.button>
+                  {viewMode === 'week' ? renderWeekView() : renderMonthView()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
+          
+          {viewMode === 'board' && (
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Task Board</h2>
                 
                 <motion.button
-                  className="ml-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center"
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center"
                   onClick={() => openTaskModal()}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -806,298 +839,269 @@ export default function CalendarPage() {
                   New Task
                 </motion.button>
               </div>
-            </div>
-            
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={viewMode + currentDate.toString()}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                {viewMode === 'week' ? renderWeekView() : renderMonthView()}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        )}
-        
-        {viewMode === 'board' && (
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Task Board</h2>
               
-              <motion.button
-                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center"
-                onClick={() => openTaskModal()}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                New Task
-              </motion.button>
+              <AnimatePresence>
+                <motion.div
+                  key="board"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {renderBoardView()}
+                </motion.div>
+              </AnimatePresence>
             </div>
-            
-            <AnimatePresence>
-              <motion.div
-                key="board"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {renderBoardView()}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        )}
-        
-        {/* Task Summary Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Task Summary</h2>
+          )}
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-medium text-blue-700 dark:text-blue-300">To Do</h3>
-                <span className="bg-blue-100 dark:bg-blue-800/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium">
-                  {columns.columns['to-do'].taskIds.length}
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                Tasks waiting to be started
-              </p>
-              
-              <div className="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <motion.div 
-                  className="h-full bg-blue-500 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(columns.columns['to-do'].taskIds.length / Math.max(Object.keys(tasks).length, 1)) * 100}%` }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                ></motion.div>
-              </div>
-            </div>
+          {/* Task Summary Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4">Task Summary</h2>
             
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-medium text-yellow-700 dark:text-yellow-300">In Progress</h3>
-                <span className="bg-yellow-100 dark:bg-yellow-800/50 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded text-xs font-medium">
-                  {columns.columns['in-progress'].taskIds.length}
-                </span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium text-blue-700 dark:text-blue-300">To Do</h3>
+                  <span className="bg-blue-100 dark:bg-blue-800/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium">
+                    {columns.columns['to-do'].taskIds.length}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Tasks waiting to be started
+                </p>
+                
+                <div className="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-blue-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(columns.columns['to-do'].taskIds.length / Math.max(Object.keys(tasks).length, 1)) * 100}%` }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                  ></motion.div>
+                </div>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                Tasks being worked on
-              </p>
               
-              <div className="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <motion.div 
-                  className="h-full bg-yellow-500 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(columns.columns['in-progress'].taskIds.length / Math.max(Object.keys(tasks).length, 1)) * 100}%` }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                ></motion.div>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium text-yellow-700 dark:text-yellow-300">In Progress</h3>
+                  <span className="bg-yellow-100 dark:bg-yellow-800/50 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded text-xs font-medium">
+                    {columns.columns['in-progress'].taskIds.length}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Tasks being worked on
+                </p>
+                
+                <div className="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-yellow-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(columns.columns['in-progress'].taskIds.length / Math.max(Object.keys(tasks).length, 1)) * 100}%` }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                  ></motion.div>
+                </div>
               </div>
-            </div>
-            
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-medium text-green-700 dark:text-green-300">Completed</h3>
-                <span className="bg-green-100 dark:bg-green-800/50 text-green-800 dark:text-green-200 px-2 py-1 rounded text-xs font-medium">
-                  {columns.columns['completed'].taskIds.length}
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                Tasks successfully finished
-              </p>
               
-              <div className="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <motion.div 
-                  className="h-full bg-green-500 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(columns.columns['completed'].taskIds.length / Math.max(Object.keys(tasks).length, 1)) * 100}%` }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                ></motion.div>
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium text-green-700 dark:text-green-300">Completed</h3>
+                  <span className="bg-green-100 dark:bg-green-800/50 text-green-800 dark:text-green-200 px-2 py-1 rounded text-xs font-medium">
+                    {columns.columns['completed'].taskIds.length}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  Tasks successfully finished
+                </p>
+                
+                <div className="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-green-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(columns.columns['completed'].taskIds.length / Math.max(Object.keys(tasks).length, 1)) * 100}%` }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                  ></motion.div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Task Modal */}
-      <AnimatePresence>
-        {showTaskModal && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowTaskModal(false)}
-          >
-            <motion.div 
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
-              ref={modalRef}
+        
+        {/* Task Modal */}
+        <AnimatePresence>
+          {showTaskModal && (
+            <motion.div
+              className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowTaskModal(false)}
             >
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">
-                  {isCreatingTask ? 'New Task' : 'Edit Task'}
-                </h2>
-                <button 
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  onClick={() => setShowTaskModal(false)}
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              
-              {error && (
-                <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
-                  {error}
-                </div>
-              )}
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={newTask.title}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    placeholder="Task title"
-                  />
+              <motion.div 
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6"
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                transition={{ type: 'spring', damping: 25 }}
+                onClick={(e) => e.stopPropagation()}
+                ref={modalRef}
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">
+                    {isCreatingTask ? 'New Task' : 'Edit Task'}
+                  </h2>
+                  <button 
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    onClick={() => setShowTaskModal(false)}
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={newTask.description}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    placeholder="Task description"
-                    rows={3}
-                  />
-                </div>
+                {error && (
+                  <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded flex items-center">
+                    <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                    {error}
+                  </div>
+                )}
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Date
+                      Title
                     </label>
                     <input
-                      type="date"
-                      name="date"
-                      value={newTask.date}
+                      type="text"
+                      name="title"
+                      value={newTask.title}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      placeholder="Task title"
                     />
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Duration (mins)
+                      Description
                     </label>
-                    <input
-                      type="number"
-                      name="duration"
-                      value={newTask.duration}
+                    <textarea
+                      name="description"
+                      value={newTask.description}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      min={5}
-                      step={5}
+                      placeholder="Task description"
+                      rows={3}
                     />
                   </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Difficulty
-                  </label>
-                  <select
-                    name="difficulty"
-                    value={newTask.difficulty}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    value={newTask.category}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="work">Work</option>
-                    <option value="learning">Learning</option>
-                    <option value="practice">Practice</option>
-                    <option value="career">Career</option>
-                    <option value="research">Research</option>
-                  </select>
-                </div>
-                
-                {!isCreatingTask && (
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="completed"
-                      name="completed"
-                      checked={newTask.completed}
-                      onChange={(e) => setNewTask({...newTask, completed: e.target.checked})}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="completed" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                      Mark as completed
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        name="date"
+                        value={newTask.date}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Duration (mins)
+                      </label>
+                      <input
+                        type="number"
+                        name="duration"
+                        value={newTask.duration}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        min={5}
+                        step={5}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Difficulty
                     </label>
+                    <select
+                      name="difficulty"
+                      value={newTask.difficulty}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="easy">Easy</option>
+                      <option value="medium">Medium</option>
+                      <option value="hard">Hard</option>
+                    </select>
                   </div>
-                )}
-              </div>
-              
-              <div className="flex justify-between mt-6">
-                {selectedTask ? (
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Category
+                    </label>
+                    <select
+                      name="category"
+                      value={newTask.category}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="work">Work</option>
+                      <option value="learning">Learning</option>
+                      <option value="practice">Practice</option>
+                      <option value="career">Career</option>
+                      <option value="research">Research</option>
+                    </select>
+                  </div>
+                  
+                  {!isCreatingTask && (
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="completed"
+                        name="completed"
+                        checked={newTask.completed}
+                        onChange={(e) => setNewTask({...newTask, completed: e.target.checked})}
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <label htmlFor="completed" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                        Mark as completed
+                      </label>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex justify-between mt-6">
+                  {selectedTask ? (
+                    <motion.button
+                      className="px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium flex items-center"
+                      onClick={() => deleteTask(selectedTask.id)}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete
+                    </motion.button>
+                  ) : (
+                    <div></div> // Empty div to maintain layout
+                  )}
+                  
                   <motion.button
-                    className="px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium flex items-center"
-                    onClick={() => deleteTask(selectedTask.id)}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+                    onClick={saveTask}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                   >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
+                    {selectedTask ? 'Update Task' : 'Create Task'}
                   </motion.button>
-                ) : (
-                  <div></div> // Empty div to maintain layout
-                )}
-                
-                <motion.button
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
-                  onClick={saveTask}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  {selectedTask ? 'Update Task' : 'Create Task'}
-                </motion.button>
-              </div>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
+      <Footer />
     </div>
   );
 }
